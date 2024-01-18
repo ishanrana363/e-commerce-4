@@ -4,15 +4,15 @@ const {Schema,model} = mongoose;
 
 const invoiceproductsSchema = new Schema({
     userID : {
-        type : new mongoose.Types.ObjectId(),
+        type : mongoose.Schema.Types.ObjectId,
         required : true
     },
     invoiceID : {
-        type : new mongoose.Types.ObjectId(),
+        type : mongoose.Schema.Types.ObjectId,
         required : true
     },
     productID : {
-        type : new mongoose.Types.ObjectId(),
+        type : mongoose.Schema.Types.ObjectId,
         required : true
     },
     qty : {

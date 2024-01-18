@@ -4,11 +4,11 @@ const {Schema,model} = mongoose;
 
 const reviewSchema = new Schema({
     userID : {
-        type : new mongoose.Types.ObjectId(),
+        type :mongoose.Schema.Types.ObjectId,
         required : true,
     },
     productID : {
-        type : new mongoose.Types.ObjectId(),
+        type : mongoose.Schema.Types.ObjectId,
         required : true
     },
     description : {

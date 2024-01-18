@@ -3,7 +3,7 @@ const {Schema,model} = mongoose;
 
 const profilesSchema = new Schema({
     userID : {
-        type : new mongoose.Types.ObjectId(),
+        type : mongoose.Schema.Types.ObjectId,
     },
     cus_add : {
         type : String,

@@ -4,7 +4,7 @@ const {Schema,model} = mongoose;
 
 const invoicesSchema = new Schema({
     userID : {
-        type : new mongoose.Types.ObjectId(),
+        type :mongoose.Schema.Types.ObjectId,
         required : true
     },
     payable : {

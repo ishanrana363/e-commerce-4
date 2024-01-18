@@ -45,7 +45,7 @@ const productdetailsSchema = new Schema({
         required : true
     },
     productID : {
-        type : new mongoose.Types.ObjectId(),
+        type : mongoose.Schema.Types.ObjectId,
         required : true
     }
 },{timestamps:true,versionKey:false});

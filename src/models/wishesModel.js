@@ -3,11 +3,11 @@ const {Schema,model} = mongoose;
 
 const wishesSchema = new Schema({
     productID : {
-        type : new mongoose.Types.ObjectId(),
+        type :mongoose.Schema.Types.ObjectId,
         required : true
     },
     userID : {
-        type : new mongoose.Types.ObjectId(),
+        type : mongoose.Schema.Types.ObjectId,
         required : true
     }
 },{timestamps:true,versionKey:false});
