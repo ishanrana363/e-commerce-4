@@ -156,6 +156,88 @@ const productBySimilarListService = async (req)=>{
     }
 }
 
+const productDetailsService = async (req) =>{
+    try{
+        let productId = new mongoose.Types.ObjectId(req.params.productID);
+        let matchStage = { $match : { _id : productId } };
+        let joinWithCategoryId = {
+            $lookup : {
+                from:"categories",localField: "categoryID",foreignField:"_id",as:"category"
+            }
+        };
+
+        let joinWithBrandId = {
+            $lookup : {
+                from:"brands",localField: "brandID",foreignField:"_id",as:"brand"
+            }
+        };
+
+        let joinWithProductId = {
+            $lookup : {
+                from : "productdetails" ,localField:"_id",foreignField:"productID",as:"product"
+            }
+        }
+
+        let unwindCategoryId = { $unwind : "$category" };
+        let unwindBrandId = { $unwind : "$brand" };
+        let unwindProductId = { $unwind : "$product" };
+
+        let data = await productsModel.aggregate([
+            matchStage,joinWithCategoryId,joinWithBrandId,joinWithProductId,
+            unwindCategoryId,unwindBrandId,unwindProductId
+        ])
+        return{
+            status:"success",
+            data : data
+        }
+
+    }catch (e) {
+        return{
+            status : "fail",
+            data : e.toString()
+        }
+    }
+}
+
+const productByRemarkListService = async (req) => {
+    try {
+        let remark = req.params.remark;
+        let matchStage = { $match: { remark: remark } };
+        let joinWithCategoryId = {
+            $lookup: {
+                from: "categories",
+                localField: "categoryID",
+                foreignField: "_id",
+                as: "category"
+            }
+        };
+        let joinWithBrandId = {
+            $lookup: {
+                from: "brands",
+                localField: "brandID",
+                foreignField: "_id",
+                as: "brand"
+            }
+        };
+        let unwindCategoryId = { $unwind: "$category" };
+        let unwindBrandId = { $unwind: "$brand" };
+        let data = await productsModel.aggregate([
+            matchStage, joinWithCategoryId, joinWithBrandId, unwindCategoryId, unwindBrandId
+        ]);
+        return {
+            status: "success",
+            data: data
+        }
+    } catch (e) {
+        return {
+            status: "fail",
+            data: e.toString()
+        }
+    }
+}
+
+
+
 
 
 
@@ -166,6 +248,8 @@ module.exports = {
     productBrandService,
     productByCategoryListService,
     productByBrandListService,
-    productBySimilarListService
+    productBySimilarListService,
+    productDetailsService,
+    productByRemarkListService
 
 }

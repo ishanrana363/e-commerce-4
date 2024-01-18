@@ -9,6 +9,8 @@ router.get("/product-brand-list",productController.productBrandList);
 router.get("/product-by-category-list/:categoryID",productController.productByCategoryList);
 router.get("/product-by-brand-list/:brandID",productController.productByBrandList);
 router.get("/product-by-similar-list/:categoryID",productController.productBySimilerList);
+router.get("/product-details/:productID",productController.productDetailsList);
+router.get("/productRemark/:remark",productController.productRemarkList);
 
 
 module.exports = router;
