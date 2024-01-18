@@ -3,7 +3,7 @@ const productCategoryModel = require("../models/categoriesModel");
 const productbrandsModel = require("../models/brandsModel");
 const productsModel = require("../models/productsModel")
 const { default: mongoose } = require("mongoose");
-
+const reviewModel = require("../models/reviewModel")
 
 //productSliderService
 
@@ -237,6 +237,50 @@ const productByRemarkListService = async (req) => {
 }
 
 
+const productKeywordService = async (req) => {
+    try {
+        let SearchRegex = { "$regex" : req.params.keyword, "$options":"i" };
+        let searchQuery = [ {title:SearchRegex}, {shortDes: SearchRegex}];
+        let searchParams = { $or : searchQuery };
+        let matchStage = { $match : searchParams };
+        let joinWithCategoryId = {
+            $lookup: {
+                from: "categories",
+                localField: "categoryID",
+                foreignField: "_id",
+                as: "category"
+            }
+        };
+        let joinWithBrandId = {
+            $lookup: {
+                from: "brands",
+                localField: "brandID",
+                foreignField: "_id",
+                as: "brand"
+            }
+        };
+        let unwindCategoryId = { $unwind: "$category" };
+        let unwindBrandId = { $unwind: "$brand" };
+        let data = await productsModel.aggregate([
+            matchStage, joinWithCategoryId, joinWithBrandId, unwindCategoryId, unwindBrandId
+        ]);
+
+        return {
+            status: "success",
+            data: data
+        }
+
+    }catch (e) {
+        return {
+            status: "fail",
+            data: e.toString()
+        }
+    }
+}
+
+
+
+
 
 
 
@@ -250,6 +294,7 @@ module.exports = {
     productByBrandListService,
     productBySimilarListService,
     productDetailsService,
-    productByRemarkListService
+    productByRemarkListService,
+    productKeywordService
 
 }
