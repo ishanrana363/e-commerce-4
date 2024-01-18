@@ -3,7 +3,8 @@ const {
     productCategoryService,
     productBrandService,
     productByCategoryListService,
-    productByBrandListService
+    productByBrandListService,
+    productBySimilarListService
 
 } =require("../services/productService");
 
@@ -27,5 +28,10 @@ exports.productByCategoryList = async (req,res) =>{
 }
 exports.productByBrandList = async (req,res) =>{
     let result = await productByBrandListService(req);
+    res.status(200).send(result)
+}
+
+exports.productBySimilerList = async (req,res) =>{
+    let result = await productBySimilarListService(req);
     res.status(200).send(result)
 }

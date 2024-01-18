@@ -120,6 +120,42 @@ const productByBrandListService = async (req) =>{
     }
 }
 
+const productBySimilarListService = async (req)=>{
+    try{
+        let categoryId = new mongoose.Types.ObjectId(req.params.categoryID);
+        let matchStage = { $match : { categoryID: categoryId } };
+        let limitStage = { $limit : 5 }
+        let joinWithCategoryId = {
+            $lookup : {
+                from:"categories",localField: "categoryID",foreignField:"_id",as:"category"
+            }
+        };
+
+        let joinWithBrandId = {
+            $lookup : {
+                from:"brands",localField: "brandID",foreignField:"_id",as:"brand"
+            }
+        };
+
+        let unwindCategoryId = { $unwind : "$category" };
+        let unwindBrandId = { $unwind : "$brand" };
+
+        let data = await productsModel.aggregate([
+            matchStage , joinWithCategoryId, joinWithBrandId,limitStage,unwindCategoryId, unwindBrandId
+        ]);
+
+        return{
+            status:"success",
+            data : data
+        }
+    }catch (e) {
+        return{
+            status : "fail",
+            data : e.toString()
+        }
+    }
+}
+
 
 
 
@@ -129,6 +165,7 @@ module.exports = {
     productCategoryService,
     productBrandService,
     productByCategoryListService,
-    productByBrandListService
+    productByBrandListService,
+    productBySimilarListService
 
 }
