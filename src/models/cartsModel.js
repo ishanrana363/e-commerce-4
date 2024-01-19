@@ -4,11 +4,11 @@ const { Schema,model } = mongoose;
 
 const cartsSchema = new Schema({
     productID : {
-        type : new mongoose.Types.ObjectId(),
+        type : mongoose.Schema.Types.ObjectId,
         required : true
     },
     userID : {
-        type : new mongoose.Types.ObjectId(),
+        type : mongoose.Schema.Types.ObjectId,
         required : true
     },
     color : {

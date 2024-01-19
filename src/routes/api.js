@@ -5,6 +5,7 @@ const productController = require("../controllers/productControllers");
 const usersController = require("../controllers/usersController");
 const authMiddleware = require("../middlewares/authMiddleware")
 const wishController = require("../controllers/wishController");
+const cartController = require("../controllers/cartController");
 
 // Product
 
@@ -34,6 +35,13 @@ router.delete("/profile-delete/:id",authMiddleware,usersController.profileDelete
 router.post("/wish-create",authMiddleware,wishController.wishListCreateController);
 router.delete("/wish-delete",authMiddleware,wishController.wishListRemoveController);
 router.get("/wish-read",authMiddleware,wishController.wishListReadController);
+
+// Cart List
+
+router.post("/create-cart",authMiddleware,cartController.createCartListController);
+router.put("/update-cart/:id",authMiddleware,cartController.updateCartListController);
+router.delete("/delete-cart/:id",authMiddleware,cartController.deleteCartListController);
+router.get("/read-cart",authMiddleware,cartController.readCartListController);
 
 
 
