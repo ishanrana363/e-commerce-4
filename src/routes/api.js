@@ -20,8 +20,12 @@ router.get("/search/:keyword",productController.productSearchList);
 // Email
 
 router.get("/otp-create/:email",usersController.sendEmail);
-router.get("/otp-verify/:email/:otp",usersController.userLoginController);
-router.post("/profile-create",authMiddleware,usersController.profileCreate);
+router.get("/login/:email/:otp",usersController.userLoginController);
+router.get("/logout",authMiddleware,usersController.userLogoutController);
+router.post("/profile-create",authMiddleware,usersController.profileCreateController);
+router.post("/profile-update",authMiddleware,usersController.profileUpdateController);
+router.get("/profile-read",authMiddleware,usersController.profileReadController);
+
 
 
 

@@ -3,7 +3,8 @@ require("dotenv").config();
 
 exports.encodeToken = (email, user_id) => {
     let payload = {
-
+        email : email,
+        user_id : user_id
     };
 
     let secretKey = process.env.JWT_SECRET_KEY;

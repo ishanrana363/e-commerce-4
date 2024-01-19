@@ -51,17 +51,61 @@ const verifyLoginService = async (req) => {
 
 const profileCreateService = async (req) =>{
       try {
-          let user_id = req.headers.user_id;
+          let user_id = req.headers["user_id"];
           let reqBody = req.body;
-          reqBody.user_id = user_id;
-          let data = await profilesModel.updateOne({userID:user_id})
+          reqBody.userID = user_id;
+          let data = await profilesModel.updateOne({userID:user_id},{$set:reqBody},{upsert:true});
+          return {
+              status:"success",data : data
+          }
       }catch (e) {
-
+          return {
+              status: "fail",
+              message: e.toString(),
+          };
       }
 }
+
+const profileUpdateService = async (req) =>{
+    try {
+        let user_id = req.headers.user_id;
+        console.log(user_id)
+        let reqBody = req.body;
+        reqBody.userID = user_id;
+        let data = await profilesModel.updateOne({userID:user_id},{$set:reqBody},{upsert:true});
+        return {
+            status:"success",data : data
+        }
+    }catch (e) {
+        return {
+            status: "fail",
+            message: e.toString(),
+        };
+    }
+};
+
+const profileReadService = async (req) => {
+    try {
+        let user_id = req.headers["user_id"];
+        let filter = { userID:user_id };
+        let data = await profilesModel.findOne(filter);
+        return{
+            status:"success",
+            data : data
+        }
+
+    }catch (e) {
+        return {
+            status: "fail",
+            message: e.toString(),
+        };
+    }
+};
 
 module.exports = {
     sendEmailService,
     verifyLoginService,
     profileCreateService,
+    profileUpdateService,
+    profileReadService
 }

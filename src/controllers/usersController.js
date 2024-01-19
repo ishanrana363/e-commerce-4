@@ -1,7 +1,9 @@
 const {
     sendEmailService,
     verifyLoginService,
-    profileCreateService
+    profileCreateService,
+    profileUpdateService,
+    profileReadService
 } = require("../services/usersService");
 
 exports.sendEmail = async (req,res) =>{
@@ -37,14 +39,24 @@ exports.userLoginController = async (req,res) =>{
 
 };
 
-exports.logoutController = async (req,res) =>{
-    // cookie
+exports.userLogoutController = async (req,res) =>{
+    // cookie options
+    let cookieOption = {
+        expires : new Date( Date.now() - 24*60*60*1000),
+        httpOnly : false
+    }
+    // remove cookie
+    res.cookie("token","",cookieOption);
+    res.status(200).json({
+        status:"success",
+        message : " User logout successfully "
+    })
 }
 
-exports.profileCreate = async (req,res) =>{
+exports.profileCreateController = async (req,res) =>{
     try {
         let result = await profileCreateService(req);
-        res.status(200).send(result);
+        res.status(201).send(result);
     }catch (e) {
         res.status(404).send({
             status : "fail",
@@ -52,3 +64,50 @@ exports.profileCreate = async (req,res) =>{
         });
     }
 };
+
+exports.profileUpdateController = async (req,res) =>{
+    try {
+        let result = await profileUpdateService(req);
+        console.log(result)
+        res.status(201).send(result);
+    }catch (e) {
+        res.status(404).send({
+            status : "fail",
+            data : e.toString()
+        });
+    }
+};
+
+
+exports.profileReadController = async (req,res) =>{
+    try {
+        let result = await profileReadService(req);
+        console.log(result)
+        res.status(201).send(result);
+    }catch (e) {
+        res.status(404).send({
+            status : "fail",
+            data : e.toString()
+        });
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
