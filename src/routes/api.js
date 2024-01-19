@@ -4,6 +4,7 @@ const router = express.Router();
 const productController = require("../controllers/productControllers");
 const usersController = require("../controllers/usersController");
 const authMiddleware = require("../middlewares/authMiddleware")
+const wishController = require("../controllers/wishController");
 
 // Product
 
@@ -25,6 +26,14 @@ router.get("/logout",authMiddleware,usersController.userLogoutController);
 router.post("/profile-create",authMiddleware,usersController.profileCreateController);
 router.post("/profile-update",authMiddleware,usersController.profileUpdateController);
 router.get("/profile-read",authMiddleware,usersController.profileReadController);
+router.delete("/profile-delete/:id",authMiddleware,usersController.profileDeleteController);
+
+
+// wish list service
+
+router.post("/wish-create",authMiddleware,wishController.wishListCreateController);
+router.delete("/wish-delete",authMiddleware,wishController.wishListRemoveController);
+router.get("/wish-read",authMiddleware,wishController.wishListReadController);
 
 
 

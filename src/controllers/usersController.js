@@ -3,7 +3,8 @@ const {
     verifyLoginService,
     profileCreateService,
     profileUpdateService,
-    profileReadService
+    profileReadService,
+    userProfileDeleteService
 } = require("../services/usersService");
 
 exports.sendEmail = async (req,res) =>{
@@ -82,8 +83,6 @@ exports.profileUpdateController = async (req,res) =>{
 exports.profileReadController = async (req,res) =>{
     try {
         let result = await profileReadService(req);
-        console.log(result)
-        res.status(201).send(result);
     }catch (e) {
         res.status(404).send({
             status : "fail",
@@ -93,6 +92,17 @@ exports.profileReadController = async (req,res) =>{
 };
 
 
+exports.profileDeleteController = async (req,res) =>{
+    try {
+        let result = await userProfileDeleteService(req);
+        res.status(201).send(result);
+    }catch (e) {
+        res.status(404).send({
+            status : "fail",
+            data : e.toString()
+        });
+    }
+};
 
 
 

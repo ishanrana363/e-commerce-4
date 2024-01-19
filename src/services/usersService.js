@@ -20,7 +20,7 @@ const profilesModel = require("../models/profilesModel")
             data : e.toString()
         }
     }
-}
+};
 
 const verifyLoginService = async (req) => {
     try{
@@ -47,7 +47,7 @@ const verifyLoginService = async (req) => {
             message: e.toString(),
         };
     }
-}
+};
 
 const profileCreateService = async (req) =>{
       try {
@@ -64,7 +64,7 @@ const profileCreateService = async (req) =>{
               message: e.toString(),
           };
       }
-}
+};
 
 const profileUpdateService = async (req) =>{
     try {
@@ -102,10 +102,30 @@ const profileReadService = async (req) => {
     }
 };
 
+
+const userProfileDeleteService = async (req) => {
+    try{
+        let user_id = req.headers["user_id"];
+        let id = req.params.id
+        // let filter = { userID : user_id };
+        let data = await profilesModel.deleteOne({userID:user_id,_id:id});
+        return{
+            status:"success",
+            data : data
+        }
+    }catch (e) {
+        return {
+            status: "fail",
+            message: e.toString(),
+        };
+    }
+}
+
 module.exports = {
     sendEmailService,
     verifyLoginService,
     profileCreateService,
     profileUpdateService,
-    profileReadService
+    profileReadService,
+    userProfileDeleteService
 }
