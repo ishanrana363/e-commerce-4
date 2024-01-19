@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const productController = require("../controllers/productControllers");
 const usersController = require("../controllers/usersController");
+const authMiddleware = require("../middlewares/authMiddleware")
 
 // Product
 
@@ -16,7 +17,13 @@ router.get("/product-details/:productID",productController.productDetailsList);
 router.get("/productRemark/:remark",productController.productRemarkList);
 router.get("/search/:keyword",productController.productSearchList);
 
-router.get("/otp-create/:email",usersController.userOtp);
+// Email
+
+router.get("/otp-create/:email",usersController.sendEmail);
+router.get("/otp-verify/:email/:otp",usersController.userLoginController);
+router.post("/profile-create",authMiddleware,usersController.profileCreate);
+
+
 
 
 

@@ -4,6 +4,7 @@ const {Schema,model} = mongoose;
 const profilesSchema = new Schema({
     userID : {
         type : mongoose.Schema.Types.ObjectId,
+        required : true
     },
     cus_add : {
         type : String,

@@ -1,28 +1,67 @@
-const usersModel = require("../models/usersModel")
+const userModel = require("../models/usersModel");
 const sendEmailUtility = require("../utility/emailHelper")
-
-const userOtpService = async (req) => {
-    try{
+const {encodeToken} = require("../utility/tokenHelper");
+const profilesModel = require("../models/profilesModel")
+  const sendEmailService = async (req) =>{
+    try {
         let email = req.params.email;
-        let otpCode = Math.floor(100000 +  Math.random() * 900000);
+        let otpCode = Math.floor(100000 + Math.random() * 999999 );
         let emailText = ` Your verification code is ${otpCode} `;
-        let emailSub = ` Verification Code `;
+        let emailSub = ` Verification code `
         await sendEmailUtility(email,emailText,emailSub);
-        await usersModel.updateOne({email:email}, {$set:{ otp: otpCode }},{upsert:true});
-        return {
-            status : "success",
-            message : "6 digits otp code has been send successfully "
-        };
-
+        await userModel.updateOne({email:email}, { $set : { otp:otpCode } } ,{ upsert : true } )
+        return{
+            status:"success",
+            data : " 6 digits otp send successfully "
+        }
     }catch (e) {
         return {
             status:"fail",
-            message : e.toString()
+            data : e.toString()
+        }
+    }
+}
+
+const verifyLoginService = async (req) => {
+    try{
+        let email = req.params.email;
+        let otp = req.params.otp
+        let total = await userModel.countDocuments({email:email,otp:otp})
+        if(total==1){
+            const user_id = await userModel.find({email:email,otp:otp}).select("_id");
+            let token = encodeToken(email,user_id[0]["_id"].toString());
+            await userModel.updateOne({email:email},{$set:{otp:0}});
+            return{
+                status: "success",
+                token : token
+            }
+        }else{
+            return{
+                status: "success",
+                message : "Invalid token"
+            }
+        }
+    }catch(e){
+        return {
+            status: "fail",
+            message: e.toString(),
         };
     }
-};
+}
 
+const profileCreateService = async (req) =>{
+      try {
+          let user_id = req.headers.user_id;
+          let reqBody = req.body;
+          reqBody.user_id = user_id;
+          let data = await profilesModel.updateOne({userID:user_id})
+      }catch (e) {
+
+      }
+}
 
 module.exports = {
-    userOtpService
+    sendEmailService,
+    verifyLoginService,
+    profileCreateService,
 }
