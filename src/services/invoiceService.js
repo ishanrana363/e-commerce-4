@@ -46,12 +46,19 @@ const createInvoiceService = async (req) => {
       //(2) =========================// Prepared cus_details & ship_details======================
 
 
+      const Profile = await profileModel.aggregate([ matchStage]);
 
+
+      let cus_details = ` Name : ${Profile[0]["cus_name"]}, Email : ${email}, Address : ${Profile[0]["cus_add"]},
+      PhoneNumber : ${Profile[0]["cus_phone"]}, City : ${Profile[0]["cus_city"]}` ;
+
+      let ship_details = ` Name : ${Profile[0]["ship_name"]}, Address : ${Profile[0]["ship_add"]},
+      PhoneNumber : ${Profile[0]["ship_phone"]}, City : ${Profile[0]["ship_city"]}`
 
 
 
       return{
-          status:"success",data : Profile
+          status:"success",data : ship_details
       }
 
 
