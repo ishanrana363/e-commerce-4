@@ -35,14 +35,18 @@ const invoicesSchema = new Schema({
         type : String,
         required : true
     },
+    vat : {
+        type : String,
+        required : true
+    },
+    delivery_charge : {
+        type : String,
+        required : true
+    },
     total : {
         type : String,
         required : true
     },
-    vat : {
-        type : String,
-        required : true
-    }
 },{timestamps:true,versionKey:false});
 
 const invoicesModel = model("invoices",invoicesSchema);

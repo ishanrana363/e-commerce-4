@@ -30,7 +30,8 @@ const invoiceproductsSchema = new Schema({
     size : {
         type : String,
         required : true
-    }
+    },
+
 },{timestamps:true,versionKey:false});
 
 
