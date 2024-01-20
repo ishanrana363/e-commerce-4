@@ -6,6 +6,7 @@ const usersController = require("../controllers/usersController");
 const authMiddleware = require("../middlewares/authMiddleware")
 const wishController = require("../controllers/wishController");
 const cartController = require("../controllers/cartController");
+const invoiceController = require("../controllers/invoiceController")
 
 // Product
 
@@ -18,6 +19,10 @@ router.get("/product-by-similar-list/:categoryID",productController.productBySim
 router.get("/product-details/:productID",productController.productDetailsList);
 router.get("/productRemark/:remark",productController.productRemarkList);
 router.get("/search/:keyword",productController.productSearchList);
+router.post("/create-review",authMiddleware, productController.productReviewCreate );
+router.get("/review-details/:productID", productController.productReviewDetails );
+
+
 
 // Email
 
@@ -43,6 +48,9 @@ router.put("/update-cart/:id",authMiddleware,cartController.updateCartListContro
 router.delete("/delete-cart/:id",authMiddleware,cartController.deleteCartListController);
 router.get("/read-cart",authMiddleware,cartController.readCartListController);
 
+// Invoice
+
+router.post("/invoice-create",authMiddleware,invoiceController.invoiceCreate)
 
 
 

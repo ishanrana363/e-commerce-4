@@ -40,11 +40,6 @@ const wishReadService = async (req) => {
         let user_id = new mongoose.Types.ObjectId(req.headers["user_id"]);
         let matchStage = { $match : { userID : user_id } };
 
-        let joinWithUserId = {
-            $lookup : {
-                from : "prfiles", localField:"userID",foreignField:"userID",as:"profile"
-            }
-        }
 
         const joinWithProductId = {
             $lookup : { from:"products",localField:"productID",foreignField:"_id",as:"product" }
@@ -54,23 +49,22 @@ const wishReadService = async (req) => {
             $lookup: {
                 from: "brands",localField: "product.brandID", foreignField: "_id", as:"brand"
             }
-        }
+        };
 
         const joinWithCategoryId = {
             $lookup: {
                 from: "categories",localField: "product.categoryID", foreignField: "_id", as:"category"
             }
-        }
+        };
 
         const unwindProductId = { $unwind : "$product" };
         const unwindBrandId = { $unwind : "$brand" };
         const unwindCategoryId = { $unwind : "$category" };
-        const unwindUserId = { $unwind : "$profile" };
 
 
         const data = await wishModel.aggregate([
             matchStage,joinWithProductId,joinWithBrandId,joinWithCategoryId,unwindBrandId,unwindProductId,
-            unwindCategoryId,joinWithUserId,unwindUserId
+            unwindCategoryId
         ]);
         return{
             status:"success", data : data

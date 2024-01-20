@@ -2,8 +2,8 @@ const productSliderModel = require("../models/productSliderModel");
 const productCategoryModel = require("../models/categoriesModel");
 const productbrandsModel = require("../models/brandsModel");
 const productsModel = require("../models/productsModel")
+const reviewModel = require("../models/reviewModel");
 const { default: mongoose } = require("mongoose");
-const reviewModel = require("../models/reviewModel")
 
 //productSliderService
 
@@ -20,7 +20,7 @@ const productSliderService = async () =>{
             data : error.toString()
         }
     }
-}
+};
 
 //productCategoryService
 
@@ -37,7 +37,7 @@ const productCategoryService  = async () =>{
             data : error.toString()
         }
     }
-}
+};
 
 //productBrandService
 
@@ -54,7 +54,7 @@ const productBrandService  = async () =>{
             data : error.toString()
         }
     }
-}
+};
 
 const productByCategoryListService = async (req) =>{
     try {
@@ -86,7 +86,7 @@ const productByCategoryListService = async (req) =>{
             data : error.toString()
         }
     }
-}
+};
 
 const productByBrandListService = async (req) =>{
     try {
@@ -118,7 +118,7 @@ const productByBrandListService = async (req) =>{
             data : error.toString()
         }
     }
-}
+};
 
 const productBySimilarListService = async (req)=>{
     try{
@@ -154,7 +154,7 @@ const productBySimilarListService = async (req)=>{
             data : e.toString()
         }
     }
-}
+};
 
 const productDetailsService = async (req) =>{
     try{
@@ -197,7 +197,7 @@ const productDetailsService = async (req) =>{
             data : e.toString()
         }
     }
-}
+};
 
 const productByRemarkListService = async (req) => {
     try {
@@ -234,7 +234,7 @@ const productByRemarkListService = async (req) => {
             data: e.toString()
         }
     }
-}
+};
 
 
 const productKeywordService = async (req) => {
@@ -276,7 +276,60 @@ const productKeywordService = async (req) => {
             data: e.toString()
         }
     }
-}
+};
+
+
+const createReviewService = async (req) =>{
+    try {
+        let user_id = new mongoose.Types.ObjectId(req.headers.user_id);
+        let reqBody = req.body;
+        reqBody.userID = user_id;
+        let data = await reviewModel.create(reqBody);
+        return{
+            status:"success",
+            data : data
+        }
+    }catch (e) {
+        return {
+            status:"fail",
+            message : e.toString()
+        }
+    }
+};
+
+
+const productReviewDetails = async (req) =>{
+    try {
+        let ProductId = new mongoose.Types.ObjectId(req.params.productID);
+        const matchStage = { $match : { productID : ProductId } };
+
+        const joinWithUserId = {
+            $lookup : {
+                from : "prfiles" , localField:"userID",foreignField:"userID",as:"profile"
+            }
+        }
+        const unwindProfile = { $unwind : "$profile" }
+        let projection = { $project : {
+                "description"  : 1,
+                "rating" : 1,
+                "profile.cus_name" : 1
+            } }
+        let data = await reviewModel.aggregate([
+            matchStage,joinWithUserId,unwindProfile,projection
+        ])
+        return {
+            status: "success",
+            data: data
+        }
+
+    }catch (e) {
+        return {
+            status:"fail",
+            message : e.toString()
+        };
+    }
+};
+
 
 
 
@@ -295,6 +348,8 @@ module.exports = {
     productBySimilarListService,
     productDetailsService,
     productByRemarkListService,
-    productKeywordService
+    productKeywordService,
+    createReviewService,
+    productReviewDetails
 
 }

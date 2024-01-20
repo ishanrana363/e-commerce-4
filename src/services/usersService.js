@@ -1,4 +1,5 @@
-const userModel = require("../models/usersModel");
+// const userModel = require("../models/usersModel");
+const usersModel = require("../models/usersModel")
 const sendEmailUtility = require("../utility/emailHelper")
 const {encodeToken} = require("../utility/tokenHelper");
 const profilesModel = require("../models/profilesModel")
@@ -9,7 +10,7 @@ const profilesModel = require("../models/profilesModel")
         let emailText = ` Your verification code is ${otpCode} `;
         let emailSub = ` Verification code `
         await sendEmailUtility(email,emailText,emailSub);
-        await userModel.updateOne({email:email}, { $set : { otp:otpCode } } ,{ upsert : true } )
+        await usersModel.updateOne({email:email}, { $set : { otp:otpCode } } ,{ upsert : true } )
         return{
             status:"success",
             data : " 6 digits otp send successfully "
@@ -26,11 +27,11 @@ const verifyLoginService = async (req) => {
     try{
         let email = req.params.email;
         let otp = req.params.otp
-        let total = await userModel.countDocuments({email:email,otp:otp})
+        let total = await usersModel.countDocuments({email:email,otp:otp})
         if(total==1){
-            const user_id = await userModel.find({email:email,otp:otp}).select("_id");
+            const user_id = await usersModel.find({email:email,otp:otp}).select("_id");
             let token = encodeToken(email,user_id[0]["_id"].toString());
-            await userModel.updateOne({email:email},{$set:{otp:0}});
+            await usersModel.updateOne({email:email},{$set:{otp:0}});
             return{
                 status: "success",
                 token : token

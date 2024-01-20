@@ -62,14 +62,14 @@ const readCarListService = async (req) => {
         let user_id = new mongoose.Types.ObjectId(req.headers.user_id);
         let matchStage = { $match : { userID:user_id } };
 
-        let joinWithUserId = {
-            $lookup : {
-                from : "prfiles", localField:"userID",foreignField:"userID",as:"profile"
-            }
-        }
-
         const joinWithProductId = {
             $lookup : { from:"products",localField:"productID",foreignField:"_id",as:"product" }
+        };
+
+        const joinWithCategoryId = {
+            $lookup: {
+                from: "categories",localField: "product.categoryID", foreignField: "_id", as:"category"
+            }
         };
 
         const joinWithBrandId = {
@@ -77,21 +77,15 @@ const readCarListService = async (req) => {
                 from: "brands",localField: "product.brandID", foreignField: "_id", as:"brand"
             }
         }
-        //
-        const joinWithCategoryId = {
-            $lookup: {
-                from: "categories",localField: "product.categoryID", foreignField: "_id", as:"category"
-            }
-        }
 
         const unwindProductId = { $unwind : "$product" };
         const unwindBrandId = { $unwind : "$brand" };
         const unwindCategoryId = { $unwind : "$category" };
-        const unwindUserId = { $unwind : "$profile" };
+
 
         const data = await cartModel.aggregate([
-            matchStage,joinWithUserId,joinWithProductId,joinWithBrandId,joinWithCategoryId,
-            unwindProductId,unwindBrandId,unwindCategoryId,unwindUserId
+            matchStage,joinWithProductId,joinWithCategoryId,joinWithBrandId,unwindProductId,
+            unwindBrandId,unwindCategoryId
         ])
         return{
             status:"success",
