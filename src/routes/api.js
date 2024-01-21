@@ -54,7 +54,10 @@ router.post("/invoice-create",authMiddleware,invoiceController.invoiceCreate);
 router.post("/payment-success/:trxID",invoiceController.paymentSuccess);
 router.post("/payment-fail/:tranId",invoiceController.paymentFail);
 router.post("/payment-cancel/:tranId",invoiceController.paymentCancel);
-router.post("/payment-ipn/:tranId",invoiceController.paymentCancel);
+router.post("/payment-ipn/:tranId",invoiceController.paymentIpn);
+router.get("/invoice-list",authMiddleware,invoiceController.invoiceList);
+router.get("/invoice-product-list/:invoiceID",authMiddleware,invoiceController.invoiceProductList);
+
 
 
 

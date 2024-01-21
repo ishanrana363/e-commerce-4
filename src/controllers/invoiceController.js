@@ -3,7 +3,9 @@ const {
     paymentSuccessService,
     paymentCancelService,
     paymentFailService,
-    paymentIpnService
+    paymentIpnService,
+    invoiceListService,
+    invoiceProductListService
 
 } = require("../services/invoiceService");
 
@@ -28,4 +30,53 @@ exports.paymentCancel = async (req,res)=>{
 exports.paymentIpn = async (req,res)=>{
     let result = await paymentIpnService(req);
     res.status(200).send(result)
-}
+};
+
+
+exports.invoiceList = async (req,res)=>{
+    let result = await invoiceListService(req);
+    res.status(200).send(result)
+};
+
+exports.invoiceProductList = async (req,res)=>{
+    let result = await invoiceProductListService(req);
+    res.status(200).send(result)
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -200,6 +200,40 @@ const paymentIpnService = async (req)=>{
     }
 };
 
+const invoiceListService = async (req,res)=>{
+    try {
+        const user_id = new mongoose.Types.ObjectId(req.headers.user_id);
+        let data = await invoiceModel.find({userID:user_id});
+        return {
+            status:"success",data:data
+        }
+    }catch (e) {
+        return {
+            status:"fail",message : e.toString()
+        };
+    }
+};
+
+
+const invoiceProductListService = async (req,res)=>{
+    try {
+        const user_id = new mongoose.Types.ObjectId(req.headers.user_id);
+        const invoice_id = new mongoose.Types.ObjectId(req.params.invoiceID);
+        let matchStage = { $match: { userID: user_id, invoiceID:invoice_id } };
+        const joinWithProductId = {
+            $lookup : { from : "products",localField:"productID",foreignField:"_id",as:"product" }
+        }
+        const unwindProductId = { $unwind : "$product" }
+        let data = await invoiceproductsModel.aggregate([matchStage,joinWithProductId,unwindProductId])
+        return {
+            status:"success",data:data
+        }
+    }catch (e) {
+        return {
+            status:"fail",message : e.toString()
+        };
+    }
+};
 
 
 
@@ -207,5 +241,8 @@ module.exports = {
     createInvoiceService,
     paymentSuccessService,
     paymentFailService,
-    paymentCancelService
+    paymentCancelService,
+    paymentIpnService,
+    invoiceListService,
+    invoiceProductListService
 }
