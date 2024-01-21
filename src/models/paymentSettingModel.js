@@ -33,11 +33,7 @@ const paymentSettingSchema = new Schema({
     init_url : {
         type : String,
         required : true
-    },
-    init_url : {
-        type : String,
-        required : true
-    },
+    }
 },{versionKey:false,timestamps:true});
 
 
