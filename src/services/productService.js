@@ -330,6 +330,68 @@ const productReviewDetails = async (req) =>{
     }
 };
 
+const productFilterService =async (req) =>{
+    try {
+        let matchStageCondiction = {};
+        if (req.body["categoryID"]){
+            matchStageCondiction.categoryID = new mongoose.Types.ObjectId(req.body["categoryID"]);
+        }
+        if (req.body["brandID"]){
+            matchStageCondiction.brandID = new mongoose.Types.ObjectId(req.body["brandID"]);
+        }
+
+        let matchStage = { $match : matchStageCondiction };
+        let addFieldStage = {
+            $addFields : {
+                numericPrice : { $toInt : "$price" }
+            }
+        }
+
+        let minPrice = parseInt(req.body["minPrice"]);
+        let maxPrice = parseInt(req.body["maxPrice"]);
+        let priceMatchCondiction = {}
+
+        if (!isNaN(minPrice)){
+            priceMatchCondiction["numericPrice"] = { $gte : minPrice  }
+        }
+
+        if (!isNaN(maxPrice)){
+            priceMatchCondiction["numericPrice"] = { ...(priceMatchCondiction["numericPrice"] || {}) , $lte : maxPrice  };
+        }
+
+        let priceMatch = { $match : priceMatchCondiction };
+        let joinWithCategoryId = {
+            $lookup: {
+                from: "categories",
+                localField: "categoryID",
+                foreignField: "_id",
+                as: "category"
+            }
+        };
+        let joinWithBrandId = {
+            $lookup: {
+                from: "brands",
+                localField: "brandID",
+                foreignField: "_id",
+                as: "brand"
+            }
+        };
+        let unwindCategoryId = { $unwind: "$category" };
+        let unwindBrandId = { $unwind: "$brand" };
+
+        let data = await productsModel.aggregate([
+            matchStage, addFieldStage, priceMatch, joinWithCategoryId,joinWithBrandId,unwindCategoryId, unwindBrandId
+        ])
+
+        return{
+            status:"success ", data:data
+        }
+
+    }catch (e) {
+
+    }
+}
+
 
 
 
@@ -350,6 +412,7 @@ module.exports = {
     productByRemarkListService,
     productKeywordService,
     createReviewService,
-    productReviewDetails
+    productReviewDetails,
+    productFilterService
 
 }

@@ -1,4 +1,3 @@
-// const userModel = require("../models/usersModel");
 const usersModel = require("../models/usersModel")
 const sendEmailUtility = require("../utility/emailHelper")
 const {encodeToken} = require("../utility/tokenHelper");
@@ -10,7 +9,7 @@ const profilesModel = require("../models/profilesModel")
         let emailText = ` Your verification code is ${otpCode} `;
         let emailSub = ` Verification code `
         await sendEmailUtility(email,emailText,emailSub);
-        await usersModel.updateOne({email:email}, { $set : { otp:otpCode } } ,{ upsert : true } )
+        await usersModel.updateOne({email:email}, { $set : { "otp.code":otpCode } } ,{ upsert : true } )
         return{
             status:"success",
             data : " 6 digits otp send successfully "
@@ -24,31 +23,57 @@ const profilesModel = require("../models/profilesModel")
 };
 
 const verifyLoginService = async (req) => {
-    try{
+    try {
         let email = req.params.email;
-        let otp = req.params.otp
-        let total = await usersModel.countDocuments({email:email,otp:otp})
-        if(total==1){
-            const user_id = await usersModel.find({email:email,otp:otp}).select("_id");
-            let token = encodeToken(email,user_id[0]["_id"].toString());
-            await usersModel.updateOne({email:email},{$set:{otp:0}});
-            return{
-                status: "success",
-                token : token
+        console.log(`email is`, email);
+        let otpCode = req.params.otp;
+        console.log(`otpcode is`,otpCode)
+
+        const user = await usersModel.findOne({ email: email,"otp.code":otpCode});
+        console.log(`user is ` ,user )
+
+        if (user) {
+            const now = new Date()/1000;
+            console.log(`now is`, now)
+            const otpCreationTime = user.otp.createdAt;
+            console.log(`otp creation time`, otpCreationTime)
+
+            const timeDifferenceInSeconds = (now - otpCreationTime)/1000;
+
+            console.log(`time diff is`, timeDifferenceInSeconds)
+
+            if (timeDifferenceInSeconds <= 60) { // Check if OTP is still valid (within 1 minute)
+                let token = encodeToken(email, user._id.toString());
+                await usersModel.updateOne({ email: email },  { "otp.code": 0 } ); // Remove the OTP field
+                return {
+                    status: "success",
+                    token: token,
+                };
+            } else {
+                return {
+                    status: "fail",
+                    message: "OTP has expired",
+                };
             }
-        }else{
-            return{
-                status: "success",
-                message : "Invalid token"
-            }
+        } else {
+            return {
+                status: "fail",
+                message: "Invalid token",
+            };
         }
-    }catch(e){
+    } catch (e) {
         return {
             status: "fail",
             message: e.toString(),
         };
     }
 };
+module.exports = verifyLoginService;
+
+
+
+
+
 
 const profileCreateService = async (req) =>{
       try {

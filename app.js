@@ -63,11 +63,11 @@ const routes = require("./src/routes/api")
 
 app.use("/api/v1",routes)
 
-// app.use(express.static("client/dist"));
+app.use(express.static("client/dist"));
 
-// app.get("*",(req,res)=>{
-// 	res.sendFile( path.resolve(__dirname,"client","dist","index.html") )
-// })
+app.get("*",(req,res)=>{
+	res.sendFile( path.resolve(__dirname,"client","dist","index.html") )
+})
 
 
 

@@ -6,7 +6,8 @@ const usersController = require("../controllers/usersController");
 const authMiddleware = require("../middlewares/authMiddleware")
 const wishController = require("../controllers/wishController");
 const cartController = require("../controllers/cartController");
-const invoiceController = require("../controllers/invoiceController")
+const invoiceController = require("../controllers/invoiceController");
+const featureController = require("../controllers/featureController");
 
 // Product
 
@@ -21,6 +22,7 @@ router.get("/productRemark/:remark",productController.productRemarkList);
 router.get("/search/:keyword",productController.productSearchList);
 router.post("/create-review",authMiddleware, productController.productReviewCreate );
 router.get("/review-details/:productID", productController.productReviewDetails );
+router.post("/product-filter-list",productController.productFilterList)
 
 
 
@@ -57,6 +59,10 @@ router.post("/payment-cancel/:tranId",invoiceController.paymentCancel);
 router.post("/payment-ipn/:tranId",invoiceController.paymentIpn);
 router.get("/invoice-list",authMiddleware,invoiceController.invoiceList);
 router.get("/invoice-product-list/:invoiceID",authMiddleware,invoiceController.invoiceProductList);
+
+//feature
+
+router.get("/feature-list", featureController.featureList )
 
 
 
