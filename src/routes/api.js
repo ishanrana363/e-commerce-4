@@ -63,7 +63,7 @@ router.get("/invoice-product-list/:invoiceID",authMiddleware,invoiceController.i
 //feature
 
 router.get("/feature-list", featureController.featureList )
-
+router.get("/feature-details/:type", featureController.featureDetails )
 
 
 

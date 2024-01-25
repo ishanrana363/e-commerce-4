@@ -1,9 +1,19 @@
 import React from 'react';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import logo from "../../assets/images/plainb-logo.svg"
 import productStore from "../../store/ProductStore.js";
+import userStore from "../../store/UserStore.js";
+import UserSubmitButton from "../user/UserSubmitButton.jsx";
 const AppNavbar = () => {
-    const {searchKeyword,setSearchKeyword} = productStore()
+    const {searchKeyword,setSearchKeyword} = productStore();
+    const {isLogin,userLogoutRequest} = userStore()
+    const navigate = useNavigate()
+    const onLogout = async () => {
+        await userLogoutRequest();
+        localStorage.clear();
+        sessionStorage.clear();
+        navigate("/")
+    }
     return (
         <>
             <div className="container-fluid text-white p-2 bg-success " >
@@ -60,15 +70,36 @@ const AppNavbar = () => {
                             </svg>
                         </Link>
                     </div>
-                        <Link to="/cart" type="button" className="btn ms-2 btn-light position-relative">
-                            <i className="bi text-dark bi-bag"></i>
-                        </Link>
-                        <Link to="/wish" type="button" className="btn ms-2 btn-light d-flex">
-                            <i className="bi text-dark bi-heart"></i>
-                        </Link>
-                        <Link type="button" className="btn ms-3 btn-success d-flex" to="/profile">Profile</Link>
-                        <Link type="button" className="btn ms-3 btn-success d-flex" to="/profile">Logout</Link>
+
+                        {
+                            isLogin() ? (
+                                <>
+                                    <Link to="/cart" type="button" className="btn ms-2 btn-light position-relative">
+                                        <i className="bi text-dark bi-bag"></i>
+                                    </Link>
+                                    <Link to="/wish" type="button" className="btn ms-2 btn-light d-flex">
+                                        <i className="bi text-dark bi-heart"></i>
+                                    </Link>
+                                    <Link  type="button" className="btn ms-3 btn-success d-flex" to="/login">Profile</Link>
+                                    <UserSubmitButton cl onClick={onLogout} text="Logout" className="btn ms-3 btn-success " />
+                                </>
+                            ) : (
+                                <>
+                                    <Link to="/cart" type="button" className="btn ms-2 btn-light position-relative">
+                                        <i className="bi text-dark bi-bag"></i>
+                                    </Link>
+                                    <Link to="/wish" type="button" className="btn ms-2 btn-light d-flex">
+                                        <i className="bi text-dark bi-heart"></i>
+                                    </Link>
+                                    <Link type="button" className="btn ms-3 btn-success d-flex" to="/login">Login</Link>
+                                </>
+                            )
+                        }
+
                     </div>
+
+
+
                 </div>
             </nav>
 
