@@ -105,6 +105,10 @@ exports.profileDeleteController = async (req,res) =>{
 };
 
 
+exports.helloRoute = function (req, res) {
+    res.send('Hello World!');
+};
+
 
 
 
