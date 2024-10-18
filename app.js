@@ -51,8 +51,14 @@ app.use(cookieParser())
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-// Database Connect
+app.set('trust proxy', 'loopback'); // Only trust localhost proxy
+app.set('trust proxy', '192.168.0.1'); // Trust specific IP
+app.set('trust proxy', 1); // Trust the first proxy
+// Database Connect 
 
+app.get("/",(req, res) => {
+	res.send("server run successfully");
+});
 
 connectDB().catch(err => console.log(err));
 
@@ -63,11 +69,6 @@ const routes = require("./src/routes/api")
 
 app.use("/api/v1",routes)
 
-app.use(express.static("client/dist"));
-
-app.get("*",(req,res)=>{
-	res.sendFile( path.resolve(__dirname,"client","dist","index.html") )
-})
 
 
 
