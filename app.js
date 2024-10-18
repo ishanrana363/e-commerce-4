@@ -8,8 +8,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 var cookieParser = require('cookie-parser')
 const mongoose = require('mongoose');
 const path = require("path");
-const connectDB = require("./db")
-
+require('dotenv').config()
 
 
 const app = new express();
@@ -60,7 +59,14 @@ app.get("/",(req, res) => {
 	res.send("server run successfully");
 });
 
-connectDB().catch(err => console.log(err));
+
+const dbPort = process.env.DB_URL
+
+mongoose.connect(dbPort).then((res)=>{
+	console.log(`--Database connect--`)
+}).catch((error)=>{
+	console.log(`--Database connection failed-- ${error}`)
+});
 
 
 // api file import
