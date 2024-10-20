@@ -42,10 +42,10 @@ const deleteCartListService = async (req) => {
     try {
         let user_id = new mongoose.Types.ObjectId(req.headers.user_id);
         let cartId = new mongoose.Types.ObjectId(req.params.id);
-        let data = await cartModel.deleteOne({userID:user_id, _id:cartId });
+        let data = await cartModel.findByIdAndDelete({userID:user_id, _id:cartId });
         return{
             status:"success",
-            data : data
+            msg : "Cart list deleted successfully"
         }
     }catch (e) {
         return {
