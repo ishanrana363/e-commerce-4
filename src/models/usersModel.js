@@ -88,7 +88,7 @@ const userSchema = new Schema(
     }
 );
 
-const usersModel = model("users", userSchema);
+const usersModel = model("users-list", userSchema);
 
 module.exports = usersModel;
 
