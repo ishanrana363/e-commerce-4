@@ -83,6 +83,7 @@ exports.profileUpdateController = async (req,res) =>{
 exports.profileReadController = async (req,res) =>{
     try {
         let result = await profileReadService(req);
+        res.send(result);
     }catch (e) {
         res.status(404).send({
             status : "fail",
