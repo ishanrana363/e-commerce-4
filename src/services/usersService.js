@@ -25,22 +25,16 @@ const profilesModel = require("../models/profilesModel")
 const verifyLoginService = async (req) => {
     try {
         let email = req.params.email;
-        console.log(`email is`, email);
         let otpCode = req.params.otp;
-        console.log(`otpcode is`,otpCode)
 
         const user = await usersModel.findOne({ email: email,"otp.code":otpCode});
-        console.log(`user is ` ,user )
 
         if (user) {
             const now = new Date()/1000;
-            console.log(`now is`, now)
             const otpCreationTime = user.otp.createdAt;
-            console.log(`otp creation time`, otpCreationTime)
 
             const timeDifferenceInSeconds = (now - otpCreationTime)/1000;
 
-            console.log(`time diff is`, timeDifferenceInSeconds)
 
             if (timeDifferenceInSeconds <= 60) { // Check if OTP is still valid (within 1 minute)
                 let token = encodeToken(email, user._id.toString());
