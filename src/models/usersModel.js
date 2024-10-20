@@ -73,15 +73,9 @@ const userSchema = new Schema(
             type: String,
         },
         otp: {
-            code: {
-                type: String,
-            },
-            createdAt: {
-                type: Date,
-                default: Date.now,
-                expires: 60,
-            },
-        },
+            type: Number,
+            required: true,
+        }
     },
     {
         versionKey: false,
@@ -94,6 +88,3 @@ module.exports = usersModel;
 
 
 
-// const userModel = model("users",userSchema);
-//
-// module.exports = userModel;

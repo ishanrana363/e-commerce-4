@@ -9,7 +9,7 @@ const sendEmailService = async (req) => {
         let emailText = ` Your verification code is ${otpCode} `;
         let emailSub = ` Verification code `
         await sendEmailUtility(email, emailText, emailSub);
-        await usersModel.updateOne({ email: email }, { $set: { "otp.code": otpCode } }, { upsert: true })
+        await usersModel.updateOne({ email: email }, { $set: { otp: otpCode } }, { upsert: true })
         return {
             status: "success",
             data: " 6 digits otp send successfully "
@@ -24,35 +24,22 @@ const sendEmailService = async (req) => {
 
 const verifyLoginService = async (req) => {
     try {
-        let email = req.params.email;
-        let otpCode = req.params.otp;
+        let email = req.params.email || req.body.email;
+        let otpCode = req.params.otp || req.body.otp;
 
-        const user = await usersModel.findOne({ email: email, "otp.code": otpCode });
+        const user = await usersModel.findOne({ email: email, otp: otpCode });
 
         if (user) {
-            const now = new Date() / 1000;
-            const otpCreationTime = user.otp.createdAt;
-
-            const timeDifferenceInSeconds = (now - otpCreationTime) / 1000;
-
-
-            if (timeDifferenceInSeconds <= 60) { // Check if OTP is still valid (within 1 minute)
-                let token = encodeToken(email, user._id.toString());
-                await usersModel.updateOne({ email: email }, { "otp.code": 0 }); // Remove the OTP field
-                return {
-                    status: "success",
-                    token: token,
-                };
-            } else {
-                return {
-                    status: "fail",
-                    message: "OTP has expired",
-                };
-            }
+            let token = encodeToken(email, user._id.toString());
+            await usersModel.updateOne({ email: email }, { otp: 0 }); 
+            return {
+                status: "success",
+                token: token,
+            };
         } else {
             return {
                 status: "fail",
-                message: "Invalid token",
+                message: "Invalid OTP",
             };
         }
     } catch (e) {
@@ -62,6 +49,8 @@ const verifyLoginService = async (req) => {
         };
     }
 };
+
+
 module.exports = verifyLoginService;
 
 
